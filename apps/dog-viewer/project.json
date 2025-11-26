@@ -14,14 +14,14 @@
         "browser": "apps/dog-viewer/src/main.ts",
         "polyfills": ["zone.js"],
         "tsConfig": "apps/dog-viewer/tsconfig.app.json",
-        "inlineStyleLanguage": "scss",
+        "inlineStyleLanguage": "css",
         "assets": [
           {
             "glob": "**/*",
             "input": "apps/dog-viewer/public"
           }
         ],
-        "styles": ["apps/dog-viewer/src/styles.scss"]
+        "styles": ["apps/dog-viewer/src/styles.css"]
       },
       "configurations": {
         "production": {
