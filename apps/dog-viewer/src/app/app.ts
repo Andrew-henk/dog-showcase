@@ -1,7 +1,16 @@
-import { Component, signal, computed, resource, effect, inject } from '@angular/core';
+import {
+  Component,
+  signal,
+  computed,
+  resource,
+  effect,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DogService, DogImage } from './services/dog.service';
 import { FavoritesService } from './services/favorites.service';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { map, combineLatest } from 'rxjs';
 
 /** Keeping this simpleish. As needed we could move this feature to a route instead of the root
  *  For now we'll start with adding in what we need and splitting it out if it gets too clunky
@@ -31,8 +40,23 @@ export class App {
     loader: async () => {
       const count = this.randomDogsCount();
       return await this.dogService.getRandomDogs(count);
-    }
+    },
   });
+
+  searchText = signal('');
+
+  filteredDogs$ = combineLatest([
+    toObservable(this.searchText),
+    toObservable(this.dogImages.value),
+  ]).pipe(
+    map(([searchText, images]) => {
+      if (!searchText) {
+        return images || [];
+      }
+      const search = searchText.toLowerCase();
+      return images?.filter((dog) => dog.breed.toLowerCase().includes(search)) || [];
+    })
+  );
 
   // Computed signal to check if current dog is favorited
   protected isFavorited = computed(() => {
